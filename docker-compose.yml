@@ -11,7 +11,6 @@ services:
     volumes:
     - ./server:/usr/src/app
 
-
   mysql:
     build: ./mysql/
     restart: always
@@ -21,8 +20,6 @@ services:
       - '3306'
     volumes:
       - chatappvolume:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
 
 volumes:
   chatappvolume:

@@ -43,7 +43,10 @@ class UserManager
     password_valid = (saved_scrypt_password == data[:password])
 
     result = if password_valid
-      { success: true }
+      { 
+        success: true,
+        result: { username: data[:username] }
+      }
     else
       { success: false, code: 401, error: "Failed to authenticate" }
     end
