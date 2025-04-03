@@ -3,6 +3,7 @@ require "json"
 
 require_relative "database"
 require_relative "user_manager"
+require_relative "message_manager"
 
 class ChatApp < Sinatra::Base
   before do
@@ -52,6 +53,36 @@ class ChatApp < Sinatra::Base
       halt [200, result.to_json]
     end
     
+  rescue => e
+    halt [500, "Error: #{[e.message, *e.backtrace[0..10]].join("\n")}"]
+  end
+
+  get "/messages/?" do
+    ## authorisation??
+    ## sessions!!??
+
+    message_manager = MessageManager.new()
+    result = message_manager.get_messages()
+
+    halt [200, result.to_json]
+  rescue => e
+    halt [500, "Error: #{[e.message, *e.backtrace[0..10]].join("\n")}"]
+  end
+
+  post "/messages/?" do
+    data = JSON.parse(request.body.read, symbolize_names: true)
+
+    user_manager = UserManager.new()
+    user = user_manager.get_user(data[:username])
+    if user.nil?
+      result = { success: false, error: "User with username #{data[:username]} not found" }
+      halt [404, result.to_json]
+    end
+
+    message_manager = MessageManager.new()
+    result = message_manager.post_message(data)
+
+    halt [200, result.to_json]
   rescue => e
     halt [500, "Error: #{[e.message, *e.backtrace[0..10]].join("\n")}"]
   end

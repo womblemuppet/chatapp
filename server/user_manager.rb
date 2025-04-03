@@ -10,6 +10,11 @@ class UserManager
     UserTable.all.map(&:attributes)
   end
 
+  def get_user(username)
+    user = UserTable.find_by(username: username)
+    return user && user.attributes    
+  end
+
   def create_user(data)
     unless data[:username].present? && data[:password].present?
       raise "Missing necessary data to create new user"
