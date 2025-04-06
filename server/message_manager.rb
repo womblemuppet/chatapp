@@ -14,7 +14,7 @@ class MessageManager
       .order(time_sent: "DESC")
       .map(&:attributes)
 
-    return { messages: last_20_messages }
+    return { success: true, messages: last_20_messages }
   end
 
   def post_message(message_data)
