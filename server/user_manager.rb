@@ -38,7 +38,11 @@ class UserManager
 
   def authenticate_user(data)
     unless data[:username].present? && data[:password].present?
-      raise "Missing necessary data to authenticate user"
+      return {
+        success: false,
+        code: 400,
+        error: "Missing necessary data to authenticate user"
+      }
     end
 
     user = UserTable.find_by(username: data[:username])
@@ -50,6 +54,7 @@ class UserManager
     result = if password_valid
       { 
         success: true,
+        code: 200,
         result: { username: data[:username] }
       }
     else

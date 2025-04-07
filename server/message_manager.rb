@@ -26,7 +26,7 @@ class MessageManager
 
     new_message.save!
 
-    return new_message.attributes
+    return { success: true, message: new_message.attributes }
   end
 
 end

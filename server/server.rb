@@ -10,6 +10,15 @@ class ChatApp < Sinatra::Base
     content_type 'application/json'
   end
 
+  configure do
+    set :show_exceptions, false
+    set :raise_errors, false
+  end
+
+  error do
+    halt [500, { success: false , message: env['sinatra.error'].message }.to_json]
+  end
+
   get "/" do
     "Chat App running here!"
   end
@@ -30,16 +39,9 @@ class ChatApp < Sinatra::Base
 
     user_manager = UserManager.new()
     result = user_manager.create_user(data)
-    raise result[:error] unless result[:success]
+    raise result[:error] unless result[:success] ##
 
     halt [200, result.to_json]
-  rescue => e
-    result = {
-      success: false,
-      error: "Error: #{[e.message, *e.backtrace[0..10]].join("\n")}"
-    }
-
-    halt [500, result.to_json]
   end
 
   post "/authenticate/?" do
@@ -47,14 +49,7 @@ class ChatApp < Sinatra::Base
 
     user_manager = UserManager.new()
     result = user_manager.authenticate_user(data)
-    if result[:success]
-      halt [200, result.to_json]
-    else
-      halt [200, result.to_json]
-    end
-    
-  rescue => e
-    halt [500, "Error: #{[e.message, *e.backtrace[0..10]].join("\n")}"]
+    halt [200, result.to_json]
   end
 
   get "/messages/?" do
@@ -65,8 +60,6 @@ class ChatApp < Sinatra::Base
     result = message_manager.get_messages()
 
     halt [200, result.to_json]
-  rescue => e
-    halt [500, "Error: #{[e.message, *e.backtrace[0..10]].join("\n")}"]
   end
 
   post "/messages/?" do
@@ -83,8 +76,6 @@ class ChatApp < Sinatra::Base
     result = message_manager.post_message(data)
 
     halt [200, result.to_json]
-  rescue => e
-    halt [500, "Error: #{[e.message, *e.backtrace[0..10]].join("\n")}"]
   end
 
 end
