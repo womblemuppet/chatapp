@@ -10,7 +10,7 @@ class MessageManager
     
     last_20_messages = MessagesTable
       .all
-      .limit(20)
+      .limit(200)
       .order(time_sent: "DESC")
       .map(&:attributes)
 
